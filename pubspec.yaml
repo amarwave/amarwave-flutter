@@ -1,0 +1,16 @@
+name: amarwave
+description: Official Dart/Flutter client SDK for AmarWave real-time WebSocket messaging.
+version: 1.0.0
+homepage: https://github.com/amarwave/amarwave-dart
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  crypto: ^3.0.3
+  http: ^1.1.0
+  web_socket_channel: ^2.4.0
+
+dev_dependencies:
+  lints: ^3.0.0
+  test: ^1.24.0
