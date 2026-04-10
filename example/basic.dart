@@ -2,20 +2,24 @@
 
 import 'package:amarwave/amarwave.dart';
 
-/// Basic example: connect, subscribe to a public channel, publish events.
+/// Basic example — connect to the AmarWave cloud, subscribe to channels,
+/// and publish events.
 void main() async {
+  // ── Initialise ────────────────────────────────────────────────────────────
+  //
+  // Use cluster: 'default' to connect to the AmarWave cloud.
+  // Use cluster: 'local'   for a self-hosted server on localhost.
+  // Or override explicitly:
+  //   wsHost: 'your-server.com', wsPort: 3001
+  //
   final aw = AmarWave(
     const AmarWaveConfig(
       appKey: 'YOUR_APP_KEY',
-      appSecret: 'YOUR_APP_SECRET', // optional — enables client-side HMAC auth
-      wsHost: 'localhost',
-      wsPort: 3001,
-      apiHost: 'localhost',
-      apiPort: 8000,
+      cluster: 'default', // resolves amarwave.com automatically
     ),
   );
 
-  // ── Connection lifecycle ─────────────────────────────────────────────────
+  // ── Connection lifecycle ──────────────────────────────────────────────────
 
   aw.connection.bind('connected', (_) {
     print('✅ Connected! Socket ID: ${aw.connection.socketId}');
@@ -25,11 +29,17 @@ void main() async {
     print('🔌 Disconnected.');
   });
 
+  aw.connection.bind('state_change', (data) {
+    if (data is Map) {
+      print('🔄 State: ${data["previous"]} → ${data["current"]}');
+    }
+  });
+
   aw.bind('error', (err) {
     print('❌ Error: $err');
   });
 
-  // ── Public channel ───────────────────────────────────────────────────────
+  // ── Public channel ────────────────────────────────────────────────────────
 
   final chat = aw.subscribe('public-chat');
 
@@ -43,17 +53,11 @@ void main() async {
 
   // ── Private channel (requires appSecret or authEndpoint) ─────────────────
 
-  final orders = aw.subscribe('private-orders');
+  // final orders = aw.subscribe('private-orders');
+  // orders.bind('subscribed', (_) => print('🔒 Subscribed to private-orders'));
+  // orders.bind('order-placed', (data) => print('🛒 Order: $data'));
 
-  orders.bind('subscribed', (_) {
-    print('🔒 Subscribed to private-orders');
-  });
-
-  orders.bind('order-placed', (data) {
-    print('🛒 Order: $data');
-  });
-
-  // ── Presence channel ─────────────────────────────────────────────────────
+  // ── Presence channel ──────────────────────────────────────────────────────
 
   final lobby = aw.subscribe('presence-lobby') as AmarWavePresenceChannel;
 
@@ -69,11 +73,11 @@ void main() async {
     print('➖ Member left. Total: ${lobby.memberCount}');
   });
 
-  // ── Open connection ──────────────────────────────────────────────────────
+  // ── Connect ───────────────────────────────────────────────────────────────
 
   aw.connect();
 
-  // ── Publish after 2 seconds ──────────────────────────────────────────────
+  // ── Publish after 2 s ─────────────────────────────────────────────────────
 
   await Future.delayed(const Duration(seconds: 2));
 
@@ -83,7 +87,7 @@ void main() async {
   });
   print('Publish result: $ok');
 
-  // Keep running for 10 seconds then disconnect.
+  // Keep alive for 10 s then disconnect.
   await Future.delayed(const Duration(seconds: 10));
   aw.disconnect();
 }

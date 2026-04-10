@@ -1,0 +1,11 @@
+name: amarwave_example
+description: Example app for the amarwave Dart/Flutter SDK.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  amarwave:
+    path: ../
