@@ -10,7 +10,7 @@ void main() async {
   // Use cluster: 'default' to connect to the AmarWave cloud.
   // Use cluster: 'local'   for a self-hosted server on localhost.
   // Or override explicitly:
-  //   wsHost: 'your-server.com', wsPort: 3001
+  //   cluster: 'local'   // self-hosted on localhost:3001
   //
   final aw = AmarWave(
     const AmarWaveConfig(

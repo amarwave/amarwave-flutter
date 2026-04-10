@@ -47,8 +47,7 @@ const Map<String, _ClusterEntry> _clusters = {
 /// final aw = AmarWave(
 ///   AmarWaveConfig(
 ///     appKey: 'my-app-key',
-///     wsHost: 'ws.example.com',
-///     wsPort: 3001,
+///     cluster: 'local',   // localhost:3001 (self-hosted)
 ///   ),
 /// );
 /// ```

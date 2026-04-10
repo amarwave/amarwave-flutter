@@ -23,9 +23,7 @@ void main() {
   final aw = AmarWave(
     const AmarWaveConfig(
       appKey: 'YOUR_APP_KEY',
-      appSecret: 'YOUR_APP_SECRET',
-      wsHost: 'localhost',
-      wsPort: 3001,
+      cluster: 'default',   // resolves amarwave.com automatically
     ),
   );
 
@@ -48,12 +46,13 @@ void main() {
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `appKey` | `String` | required | Your AmarWave application key |
+| `cluster` | `String?` | `null` | Named cluster — auto-resolves host/port (`'default'`, `'local'`, `'eu'`, `'us'`, `'ap1'`, `'ap2'`) |
 | `appSecret` | `String?` | `null` | App secret for client-side HMAC auth |
-| `wsHost` | `String` | `'localhost'` | WebSocket server hostname |
-| `wsPort` | `int` | `3001` | WebSocket plain port |
-| `wssPort` | `int` | `443` | WebSocket TLS port |
-| `apiHost` | `String?` | same as `wsHost` | HTTP API hostname |
-| `apiPort` | `int` | `8000` | HTTP API port |
+| `wsHost` | `String` | cluster value | WebSocket hostname override (self-hosted only) |
+| `wsPort` | `int` | cluster value | WebSocket plain port override (self-hosted only) |
+| `wssPort` | `int` | cluster value | WebSocket TLS port override |
+| `apiHost` | `String?` | cluster value | HTTP API hostname override |
+| `apiPort` | `int` | cluster value | HTTP API port override |
 | `forceTLS` | `bool` | `false` | Force wss:// and https:// |
 | `authEndpoint` | `String` | `'/broadcasting/auth'` | Server-side auth endpoint |
 | `authHeaders` | `Map<String,String>` | `{}` | Extra auth request headers |
