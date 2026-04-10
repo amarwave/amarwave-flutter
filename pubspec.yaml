@@ -2,7 +2,7 @@ name: amarwave
 description: >-
   Official Dart/Flutter client SDK for AmarWave real-time WebSocket messaging.
   Subscribe to public, private, and presence channels with built-in HMAC auth.
-version: 1.0.2
+version: 1.0.3
 homepage: https://amarwave.com
 repository: https://github.com/amarwave/amarwave-flutter
 issue_tracker: https://github.com/amarwave/amarwave-flutter/issues

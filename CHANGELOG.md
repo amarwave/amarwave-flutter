@@ -2,6 +2,10 @@
 
 All notable changes to the AmarWave Dart/Flutter SDK will be documented in this file.
 
+## 1.0.3
+
+- Remove `wssPort` override row from config table — cluster handles everything.
+
 ## 1.0.2
 
 - Remove all self-hosted / `cluster: 'local'` references — cloud-only platform.
