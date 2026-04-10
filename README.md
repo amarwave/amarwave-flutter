@@ -1,6 +1,6 @@
 # AmarWave Flutter / Dart SDK
 
-Official Dart/Flutter client SDK for [AmarWave](https://github.com/amarwave/amarwave-flutter) — the self-hosted real-time WebSocket platform.
+Official Dart/Flutter client SDK for [AmarWave](https://github.com/amarwave/amarwave-flutter) — the real-time WebSocket platform.
 
 ## Installation
 
@@ -46,10 +46,8 @@ void main() {
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `appKey` | `String` | required | Your AmarWave application key |
-| `cluster` | `String?` | `null` | Named cluster — auto-resolves host/port (`'default'`, `'local'`, `'eu'`, `'us'`, `'ap1'`, `'ap2'`) |
+| `cluster` | `String?` | `null` | Named cluster — auto-resolves host/port (`'default'`, `'eu'`, `'us'`, `'ap1'`, `'ap2'`) |
 | `appSecret` | `String?` | `null` | App secret for client-side HMAC auth |
-| `wsHost` | `String` | cluster value | WebSocket hostname override (self-hosted only) |
-| `wsPort` | `int` | cluster value | WebSocket plain port override (self-hosted only) |
 | `wssPort` | `int` | cluster value | WebSocket TLS port override |
 | `apiHost` | `String?` | cluster value | HTTP API hostname override |
 | `apiPort` | `int` | cluster value | HTTP API port override |

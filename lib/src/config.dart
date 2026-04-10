@@ -15,7 +15,6 @@ class _ClusterEntry {
 /// Maps cluster shorthand names to their resolved WebSocket and API endpoints.
 ///
 /// Both `"default"` and named clusters resolve to `amarwave.com`.
-/// Use `"local"` to connect to a self-hosted server on localhost.
 const Map<String, _ClusterEntry> _clusters = {
   'default': _ClusterEntry('amarwave.com', 80, 443, 'amarwave.com', 443),
   'local':   _ClusterEntry('localhost',   3001, 3001, 'localhost',  8000),
@@ -32,22 +31,12 @@ const Map<String, _ClusterEntry> _clusters = {
 /// Only [appKey] is required. Use [cluster] to connect to a named AmarWave
 /// cluster — all host/port values are resolved automatically.
 ///
-/// Example (cloud):
+/// Example:
 /// ```dart
 /// final aw = AmarWave(
 ///   AmarWaveConfig(
 ///     appKey: 'my-app-key',
 ///     cluster: 'default',   // resolves amarwave.com automatically
-///   ),
-/// );
-/// ```
-///
-/// Example (self-hosted):
-/// ```dart
-/// final aw = AmarWave(
-///   AmarWaveConfig(
-///     appKey: 'my-app-key',
-///     cluster: 'local',   // localhost:3001 (self-hosted)
 ///   ),
 /// );
 /// ```
@@ -63,10 +52,7 @@ class AmarWaveConfig {
   /// Named cluster shorthand. Automatically resolves [wsHost], [wsPort],
   /// [wssPort], [apiHost], and [apiPort].
   ///
-  /// Built-in clusters: `'default'`, `'local'`, `'eu'`, `'us'`, `'ap1'`, `'ap2'`.
-  ///
-  /// When set, explicit [wsHost]/[wsPort] values still take priority if they
-  /// differ from their defaults (`'localhost'` / `3001`).
+  /// Built-in clusters: `'default'`, `'eu'`, `'us'`, `'ap1'`, `'ap2'`.
   final String? cluster;
 
   /// WebSocket server hostname override.

@@ -2,10 +2,15 @@
 
 All notable changes to the AmarWave Dart/Flutter SDK will be documented in this file.
 
+## 1.0.2
+
+- Remove all self-hosted / `cluster: 'local'` references — cloud-only platform.
+- Remove `wsHost`/`wsPort` rows from config table (cloud cluster resolves everything).
+- Simplified docs: only `cluster: 'default'` needed to connect.
+
 ## 1.0.1
 
 - Remove `wsHost`/`wsPort` from all examples — use `cluster: 'default'` instead.
-- Self-hosted example now uses `cluster: 'local'` (resolves `localhost:3001`).
 - README config table updated: `cluster` listed as primary option.
 
 ## 1.0.0
@@ -17,7 +22,7 @@ All notable changes to the AmarWave Dart/Flutter SDK will be documented in this 
 - Server-side channel auth via configurable `authEndpoint`.
 - `AmarWavePresenceChannel` with live `members` map, `memberCount`, and `me`.
 - `channel.publish()` with pre-subscription queue (calls buffered until subscribed).
-- Named cluster support (`cluster: 'default'` / `'local'` / `'eu'` etc.) — auto-resolves host and port.
+- Named cluster support (`cluster: 'default'` / `'eu'` etc.) — auto-resolves host and port.
 - Ping/pong keepalive with configurable `activityTimeout` and `pongTimeout`.
 - `connection.bind()` for lifecycle events (`connected`, `disconnected`, `state_change`, `error`).
 - Full `AmarWaveConnection` proxy with `socketId` and `state` accessors.
