@@ -1,19 +1,54 @@
 // ignore_for_file: constant_identifier_names
 
+// ─── Cluster map ─────────────────────────────────────────────────────────────
+
+class _ClusterEntry {
+  final String wsHost;
+  final int wsPort;
+  final int wssPort;
+  final String apiHost;
+  final int apiPort;
+  const _ClusterEntry(
+      this.wsHost, this.wsPort, this.wssPort, this.apiHost, this.apiPort);
+}
+
+/// Maps cluster shorthand names to their resolved WebSocket and API endpoints.
+///
+/// Both `"default"` and named clusters resolve to `amarwave.com`.
+/// Use `"local"` to connect to a self-hosted server on localhost.
+const Map<String, _ClusterEntry> _clusters = {
+  'default': _ClusterEntry('amarwave.com', 80, 443, 'amarwave.com', 443),
+  'local':   _ClusterEntry('localhost',   3001, 3001, 'localhost',  8000),
+  'eu':      _ClusterEntry('amarwave.com', 80, 443, 'amarwave.com', 443),
+  'us':      _ClusterEntry('amarwave.com', 80, 443, 'amarwave.com', 443),
+  'ap1':     _ClusterEntry('amarwave.com', 80, 443, 'amarwave.com', 443),
+  'ap2':     _ClusterEntry('amarwave.com', 80, 443, 'amarwave.com', 443),
+};
+
+// ─── AmarWaveConfig ───────────────────────────────────────────────────────────
+
 /// Configuration for the AmarWave WebSocket client.
 ///
-/// Only [appKey] is required. All other fields default to sensible values
-/// that work with a local AmarWave server.
+/// Only [appKey] is required. Use [cluster] to connect to a named AmarWave
+/// cluster — all host/port values are resolved automatically.
 ///
-/// Example:
+/// Example (cloud):
 /// ```dart
 /// final aw = AmarWave(
 ///   AmarWaveConfig(
 ///     appKey: 'my-app-key',
-///     appSecret: 'my-app-secret',    // optional – enables client-side HMAC auth
+///     cluster: 'default',   // resolves amarwave.com automatically
+///   ),
+/// );
+/// ```
+///
+/// Example (self-hosted):
+/// ```dart
+/// final aw = AmarWave(
+///   AmarWaveConfig(
+///     appKey: 'my-app-key',
 ///     wsHost: 'ws.example.com',
 ///     wsPort: 3001,
-///     forceTLS: false,
 ///   ),
 /// );
 /// ```
@@ -26,20 +61,31 @@ class AmarWaveConfig {
   /// ⚠️  Do not expose in production — use [authEndpoint] instead.
   final String? appSecret;
 
-  /// WebSocket server hostname. Default: `'localhost'`.
+  /// Named cluster shorthand. Automatically resolves [wsHost], [wsPort],
+  /// [wssPort], [apiHost], and [apiPort].
+  ///
+  /// Built-in clusters: `'default'`, `'local'`, `'eu'`, `'us'`, `'ap1'`, `'ap2'`.
+  ///
+  /// When set, explicit [wsHost]/[wsPort] values still take priority if they
+  /// differ from their defaults (`'localhost'` / `3001`).
+  final String? cluster;
+
+  /// WebSocket server hostname override.
+  /// Leave `null` (or omit) when using [cluster].
   final String wsHost;
 
-  /// WebSocket plain port (ws://). Default: `3001`.
+  /// WebSocket plain port (ws://) override.
+  /// Leave at default `3001` (or omit) when using [cluster].
   final int wsPort;
 
   /// WebSocket TLS port (wss://). Used when [forceTLS] is true. Default: `443`.
   final int wssPort;
 
   /// HTTP API hostname for publishing events.
-  /// Defaults to the same value as [wsHost].
+  /// Defaults to the cluster's API host, then falls back to [wsHost].
   final String? apiHost;
 
-  /// HTTP API port. Default: `8000`.
+  /// HTTP API port. Default: `8000` (overridden by cluster when using [cluster]).
   final int apiPort;
 
   /// HTTP API trigger path. Default: `'/api/v1/trigger'`.
@@ -80,6 +126,7 @@ class AmarWaveConfig {
   const AmarWaveConfig({
     required this.appKey,
     this.appSecret,
+    this.cluster,
     this.wsHost = 'localhost',
     this.wsPort = 3001,
     this.wssPort = 443,
@@ -98,6 +145,53 @@ class AmarWaveConfig {
     this.disableStats = false,
   });
 
-  /// The resolved API host (falls back to [wsHost] if [apiHost] is null).
-  String get resolvedApiHost => apiHost ?? wsHost;
+  // ── Resolved accessors ────────────────────────────────────────────────────
+
+  /// Returns the cluster entry for [cluster], if set.
+  _ClusterEntry? get _entry => cluster != null ? _clusters[cluster!] : null;
+
+  /// Resolved WebSocket hostname.
+  /// Cluster value is used when [wsHost] was not explicitly changed from its
+  /// default of `'localhost'`.
+  String get resolvedWsHost {
+    final e = _entry;
+    if (e != null && wsHost == 'localhost') return e.wsHost;
+    return wsHost;
+  }
+
+  /// Resolved plain WebSocket port.
+  /// Cluster value is used when [wsPort] was not explicitly changed from its
+  /// default of `3001`.
+  int get resolvedWsPort {
+    final e = _entry;
+    if (e != null && wsPort == 3001) return e.wsPort;
+    return wsPort;
+  }
+
+  /// Resolved TLS WebSocket port.
+  /// Cluster value is used when [wssPort] was not explicitly changed from its
+  /// default of `443`.
+  int get resolvedWssPort {
+    final e = _entry;
+    if (e != null && wssPort == 443) return e.wssPort;
+    return wssPort;
+  }
+
+  /// Resolved HTTP API hostname.
+  String get resolvedApiHost {
+    if (apiHost != null) return apiHost!;
+    final e = _entry;
+    if (e != null) return e.apiHost;
+    return wsHost;
+  }
+
+  /// Resolved HTTP API port.
+  /// Cluster value is used when [apiPort] was not explicitly changed from its
+  /// default of `8000`.
+  int get resolvedApiPort {
+    if (apiHost != null) return apiPort; // explicit apiHost → trust apiPort
+    final e = _entry;
+    if (e != null && apiPort == 8000) return e.apiPort;
+    return apiPort;
+  }
 }

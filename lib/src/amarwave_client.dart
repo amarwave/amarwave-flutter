@@ -134,8 +134,11 @@ class AmarWave extends EventEmitter {
       String channelName, String event, dynamic data) async {
     final c = _cfg;
     final proto = c.forceTLS ? 'https' : 'http';
+    final defaultApiPort = c.forceTLS ? 443 : 80;
+    final apiPort = c.resolvedApiPort;
+    final portStr = apiPort == defaultApiPort ? '' : ':$apiPort';
     final url = Uri.parse(
-        '$proto://${c.resolvedApiHost}:${c.apiPort}${c.apiPath}');
+        '$proto://${c.resolvedApiHost}$portStr${c.apiPath}');
 
     try {
       final res = await http.post(
@@ -166,10 +169,13 @@ class AmarWave extends EventEmitter {
 
   Uri _buildWsUri() {
     final c = _cfg;
-    final scheme = c.forceTLS ? 'wss' : 'ws';
-    final port = c.forceTLS ? c.wssPort : c.wsPort;
+    final useTLS = c.forceTLS;
+    final scheme = useTLS ? 'wss' : 'ws';
+    final port = useTLS ? c.resolvedWssPort : c.resolvedWsPort;
+    final defaultPort = useTLS ? 443 : 80;
+    final portStr = port == defaultPort ? '' : ':$port';
     return Uri.parse(
-        '$scheme://${c.wsHost}:$port${c.wsPath}?app_key=${Uri.encodeQueryComponent(c.appKey)}');
+        '$scheme://${c.resolvedWsHost}$portStr${c.wsPath}?app_key=${Uri.encodeQueryComponent(c.appKey)}');
   }
 
   void _openSocket() {
@@ -269,6 +275,7 @@ class AmarWave extends EventEmitter {
 
   void _onError(dynamic err) {
     emit('error', err);
+    connection.fireError(err);
     connection.fireState(state);
   }
 

@@ -39,11 +39,17 @@ class AmarWaveConnection extends EventEmitter {
 
   /// @internal Called by [AmarWave] when state changes.
   void fireState(AmarWaveState newState, [dynamic data]) {
+    final previous = _state;
     _state = newState;
     emit(newState.name, data);
     emit('state_change', {
-      'previous': _state.name,
+      'previous': previous.name,
       'current': newState.name,
     });
+  }
+
+  /// @internal Forward an error to connection-level listeners.
+  void fireError(dynamic err) {
+    emit('error', err);
   }
 }
