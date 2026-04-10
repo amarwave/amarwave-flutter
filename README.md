@@ -48,8 +48,6 @@ void main() {
 | `appKey` | `String` | required | Your AmarWave application key |
 | `cluster` | `String?` | `null` | Named cluster — auto-resolves host/port (`'default'`, `'eu'`, `'us'`, `'ap1'`, `'ap2'`) |
 | `appSecret` | `String?` | `null` | App secret for client-side HMAC auth |
-| `apiHost` | `String?` | cluster value | HTTP API hostname override |
-| `apiPort` | `int` | cluster value | HTTP API port override |
 | `forceTLS` | `bool` | `false` | Force wss:// and https:// |
 | `authEndpoint` | `String` | `'/broadcasting/auth'` | Server-side auth endpoint |
 | `authHeaders` | `Map<String,String>` | `{}` | Extra auth request headers |
