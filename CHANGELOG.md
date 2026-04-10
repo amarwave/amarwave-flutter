@@ -2,6 +2,12 @@
 
 All notable changes to the AmarWave Dart/Flutter SDK will be documented in this file.
 
+## 1.0.1
+
+- Remove `wsHost`/`wsPort` from all examples — use `cluster: 'default'` instead.
+- Self-hosted example now uses `cluster: 'local'` (resolves `localhost:3001`).
+- README config table updated: `cluster` listed as primary option.
+
 ## 1.0.0
 
 - Initial stable release.
