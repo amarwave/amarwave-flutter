@@ -2,6 +2,12 @@
 
 All notable changes to the AmarWave Dart/Flutter SDK will be documented in this file.
 
+## 1.0.4
+
+- Fix: `publish()` now correctly uses `https://` for the cloud cluster — port 443
+  implied TLS but scheme was derived from `forceTLS` only, causing all publish calls
+  to cloud clusters to fail with `http://amarwave.com:443/...`.
+
 ## 1.0.3
 
 - Remove `wssPort` override row from config table — cluster handles everything.
