@@ -133,9 +133,11 @@ class AmarWave extends EventEmitter {
   Future<bool> _httpPublish(
       String channelName, String event, dynamic data) async {
     final c = _cfg;
-    final proto = c.forceTLS ? 'https' : 'http';
-    final defaultApiPort = c.forceTLS ? 443 : 80;
     final apiPort = c.resolvedApiPort;
+    // Port 443 implies HTTPS regardless of forceTLS (cloud cluster resolves to 443)
+    final useTLS = c.forceTLS || apiPort == 443;
+    final proto = useTLS ? 'https' : 'http';
+    final defaultApiPort = useTLS ? 443 : 80;
     final portStr = apiPort == defaultApiPort ? '' : ':$apiPort';
     final url = Uri.parse(
         '$proto://${c.resolvedApiHost}$portStr${c.apiPath}');
